@@ -1,11 +1,11 @@
 /**
  * @param {number} k
  */
-var MyCircularQueue = function(k) {
+ var MyCircularQueue = function(k) {
   this.maxLen = k;
   this.array = [];
-  this.head = 0;
-  this.tail = 0;
+  this.head = -1;
+  this.tail = -1;
 };
 
 /** 
@@ -13,15 +13,20 @@ var MyCircularQueue = function(k) {
  * @return {boolean}
  */
 MyCircularQueue.prototype.enQueue = function(value) {
-  if(this.isFull){
+  if(this.isFull()){
     return false;
   }
-  this.array[this.tail] = value;
-  if(this.tail === this.maxLen - 1){
-    this.tail = 0;
-  } else {
-    this.tail++;
-  }
+    let wasEmpty = this.isEmpty();
+
+        if(this.tail === this.maxLen - 1){
+            this.tail = 0;
+        } else {
+            this.tail++;
+        }
+    this.array[this.tail] = value;
+    if(wasEmpty){
+        this.head = this.tail;
+    }
   return true;
 };
 
@@ -29,14 +34,16 @@ MyCircularQueue.prototype.enQueue = function(value) {
  * @return {boolean}
  */
 MyCircularQueue.prototype.deQueue = function() {
-  if(this.isEmpty){
+  if(this.isEmpty()){
     return false;
   }
   this.array[this.head] = undefined;
-  if(this.head === this.maxLen - 1){
-    this.head = 0;
-  } else {
-    this.head++;
+  if(!this.isEmpty()){
+    if(this.head === this.maxLen - 1){
+      this.head = 0;
+    } else {
+      this.head++;
+    }
   }
   return true;
 };
@@ -45,18 +52,18 @@ MyCircularQueue.prototype.deQueue = function() {
  * @return {number}
  */
 MyCircularQueue.prototype.Front = function() {
-  return this.isEmpty ? 
+  return this.isEmpty() ? 
           -1 : 
-          this.array[this.tail];
+          this.array[this.head];
 };
 
 /**
  * @return {number}
  */
 MyCircularQueue.prototype.Rear = function() {
-  return this.isEmpty ?
+  return this.isEmpty() ?
           -1 :
-          this.array[this.head]
+          this.array[this.tail]
 ;}
 ;
 /**
@@ -73,12 +80,11 @@ MyCircularQueue.prototype.isEmpty = function() {
  * @return {boolean}
  */
 MyCircularQueue.prototype.isFull = function() {  
-  if(this.head == 0 && this.tail == this.maxLen - 1){
+  if(this.head === 0 && this.tail === this.maxLen - 1 && this.array[this.tail] !== undefined){
     return true;
   }
-  if(this.head == this.tail + 1){
+  if(this.head === this.tail + 1){
     return true;
   }
   return false;
 };
-
